@@ -2,17 +2,17 @@ package com.example.pokedex;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.pokedex.API.PokeAPI;
+import com.example.pokedex.Adapter.PokeNameAdapter;
+import com.example.pokedex.Model.Pokemon;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 PokeName = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
-                adapter = new PokeNameAdapter(PokeName);
+                adapter = new PokeNameAdapter(MainActivity.this, PokeName);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(adapter);
 
