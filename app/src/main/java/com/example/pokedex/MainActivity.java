@@ -1,10 +1,17 @@
 package com.example.pokedex;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,31 +23,52 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ArrayList<Pokemon> PokeName;
+    private RecyclerView recyclerView;
+    private PokeNameAdapter adapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private PokeAPI pokeAPI;
+
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView text = findViewById(R.id.textView);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(this, 2);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://pokeapi.co/")
+                .baseUrl("https://pokeapi.co/api/v2/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        RequestInterface requestInterface = retrofit.create(RequestInterface.class);
-        Call<List<Pokemon>> call = requestInterface.getPokeJson();
+        pokeAPI = retrofit.create(PokeAPI.class);
+        pokeNameList();
+    }
 
-        call.enqueue(new Callback<List<Pokemon>>() {
+    public void pokeNameList(){
+        Call<PokeList> call = pokeAPI.getPokeJson();
+        call.enqueue(new Callback<PokeList>() {
             @Override
-            public void onResponse(Call<List<Pokemon>> call, Response<List<Pokemon>> response) {
-                text.setText("Success");
+            public void onResponse(Call<PokeList> call, Response<PokeList> response) {
+                if(!response.isSuccessful()){
+                    return;
+                }
+
+                PokeName = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
+                adapter = new PokeNameAdapter(PokeName);
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(adapter);
+
+
             }
 
             @Override
-            public void onFailure(Call<List<Pokemon>> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Failure", Toast.LENGTH_SHORT).show();
-                text.setText("Failure");
+            public void onFailure(Call<PokeList> call, Throwable t) {
+                Log.i("Error:", "Fetch: "+ t.getMessage());
             }
         });
     }
