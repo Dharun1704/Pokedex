@@ -1,15 +1,16 @@
-package com.example.pokedex;
+package com.example.pokedex.Model;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.example.pokedex.API.PokeAPI;
+import com.example.pokedex.Interface.PokeAPI;
 import com.example.pokedex.Adapter.PokeNameAdapter;
-import com.example.pokedex.Model.Pokemon;
+import com.example.pokedex.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PokeNameAdapter.OnItemClickListener {
+    public static final String EXTRA_NAME = "PokeName";
+    public static final String EXTRA_URL =  "PokeUrl";
+    public static final String EXTRA_POS = "position";
 
     private ArrayList<Pokemon> PokeName;
     private RecyclerView recyclerView;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void pokeNameList(){
-        Call<PokeList> call = pokeAPI.getPokeJson();
+        Call<PokeList> call = pokeAPI.getPokeNameJson();
         call.enqueue(new Callback<PokeList>() {
             @Override
             public void onResponse(Call<PokeList> call, Response<PokeList> response) {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter = new PokeNameAdapter(MainActivity.this, PokeName);
                 recyclerView.setLayoutManager(mLayoutManager);
                 recyclerView.setAdapter(adapter);
-
+                adapter.setOnItemClickListener(MainActivity.this);
 
             }
 
@@ -71,5 +75,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Error:", "Fetch: "+ t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        Pokemon clickedPokemon = PokeName.get(position);
+
+        detailIntent.putExtra(EXTRA_NAME, clickedPokemon.getName());
+        detailIntent.putExtra(EXTRA_URL, clickedPokemon.getUrl());
+        detailIntent.putExtra(EXTRA_POS, position);
+
+        startActivity(detailIntent);
     }
 }
