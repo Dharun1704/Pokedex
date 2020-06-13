@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pokedex.Model.Pokemon;
@@ -18,15 +19,19 @@ import java.util.ArrayList;
 
 public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHolder> {
 
-    private Context context;
+    Context context;
     private ArrayList<Pokemon> PokeName;
     private OnItemClickListener mListener;
+    private int pic;
 
-    String ImgURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+    String PokeImgURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
+    String ItemImgUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/";
 
-    public PokeNameAdapter(Context context, ArrayList<Pokemon> pokeName) {
+
+    public PokeNameAdapter(Context context, ArrayList<Pokemon> pokeName, int pic) {
         this.context = context;
         PokeName = pokeName;
+        this.pic = pic;
     }
 
     public interface OnItemClickListener {
@@ -52,19 +57,34 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
         //load name
         holder.name.setText(currItem.getName());
 
-        //load image
-        if(position <= 807) {
+        if(pic == 1) {
+            //load image
+            if (position <= 807) {
+                Picasso
+                        .get()
+                        .load(PokeImgURL + (position + 1) + ".png")
+                        .into(holder.image);
+            } else {
+                Picasso
+                        .get()
+                        .load(PokeImgURL + (position + 9193) + ".png")
+                        .into(holder.image);
+
+            }
+        }
+
+        else if (pic == 2){
+            //load item image
             Picasso
                     .get()
-                    .load(ImgURL + (position + 1) + ".png")
+                    .load(ItemImgUrl + currItem.getName() + ".png")
                     .into(holder.image);
         }
-        else {
-            Picasso
-                    .get()
-                    .load(ImgURL + (position + 9193) + ".png")
-                    .into(holder.image);
 
+
+        else if (pic == 0){
+            //remove image
+            holder.image.setVisibility(View.GONE);
         }
     }
 
@@ -77,6 +97,7 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
 
         public TextView name;
         public ImageView image;
+        public CardView card;
 
 
         public ViewHolder(@NonNull View itemView, OnItemClickListener listener) {
@@ -84,6 +105,7 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
 
             name = itemView.findViewById(R.id.pokeName);
             image = itemView.findViewById(R.id.pokeImage);
+            card = itemView.findViewById(R.id.cardView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
