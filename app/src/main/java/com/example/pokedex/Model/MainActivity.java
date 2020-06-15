@@ -1,16 +1,21 @@
 package com.example.pokedex.Model;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.SearchView;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.pokedex.Interface.PokeAPI;
 import com.example.pokedex.Adapter.PokeNameAdapter;
@@ -18,7 +23,6 @@ import com.example.pokedex.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView.LayoutManager mLayoutManager;
     private PokeAPI pokeAPI;
+    private ImageView pokeImage;
 
     private static final String TAG = "MainActivity";
 
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pokeImage = findViewById(R.id.pokeImage);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(this, 2);
@@ -280,5 +286,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 }

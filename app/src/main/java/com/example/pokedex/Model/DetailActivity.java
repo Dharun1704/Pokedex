@@ -105,7 +105,7 @@ public class DetailActivity extends AppCompatActivity {
                     tv_id.setText("#0" + ID);
                 }
                 else
-                    tv_id.setText(ID);
+                    tv_id.setText("#" + ID);
                 tv_exp.setText(exp + "");
                 tv_height.setText(height + " m");
                 tv_weight.setText(weight + " kg");

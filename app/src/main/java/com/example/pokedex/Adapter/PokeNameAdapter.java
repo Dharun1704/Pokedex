@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,11 +18,13 @@ import com.example.pokedex.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHolder> {
+public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHolder>{
 
     Context context;
     private ArrayList<Pokemon> PokeName;
+    private ArrayList<Pokemon> PokeAll;
     private OnItemClickListener mListener;
     private int pic;
 
@@ -31,6 +35,7 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
     public PokeNameAdapter(Context context, ArrayList<Pokemon> pokeName, int pic) {
         this.context = context;
         PokeName = pokeName;
+        PokeAll = new ArrayList<>(pokeName);
         this.pic = pic;
     }
 
@@ -120,4 +125,7 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
             });
         }
     }
+
+
+
 }
