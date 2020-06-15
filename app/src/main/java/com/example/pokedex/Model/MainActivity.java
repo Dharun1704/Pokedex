@@ -134,10 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
                         Pokemon clickedPokemon = PokeName.get(position);
-
-
                         detailIntent.putExtra(EXTRA_NAME, clickedPokemon.getName());
-                        detailIntent.putExtra(EXTRA_POS, position);
+                        detailIntent.putExtra(EXTRA_POS, clickedPokemon.getUrl());
 
                         startActivity(detailIntent);
                     }

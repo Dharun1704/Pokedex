@@ -52,9 +52,9 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String PokemonName = intent.getStringExtra(EXTRA_NAME);
-        id = intent.getIntExtra(EXTRA_POS, -1) + 1;
-        if (id > 807)
-            id += 9193;
+        String url = intent.getStringExtra(EXTRA_POS);
+        String[] urlParts = url.split("/");
+        id = Integer.parseInt(urlParts[urlParts.length - 1]);
 
         PokeName = findViewById(R.id.detail_name);
         PokeImage = findViewById(R.id.detail_image);
@@ -71,13 +71,16 @@ public class DetailActivity extends AppCompatActivity {
         speed = findViewById(R.id.stat_speed);
 
         PokeName.setText(PokemonName);
-        Picasso
-                .get()
-                .load(ImgURL + id + ".png")
-                .fit()
-                .centerCrop()
-                .into(PokeImage);
-
+        if(id > 10090)
+            PokeImage.setImageResource(R.drawable.pokemon);
+        else {
+            Picasso
+                    .get()
+                    .load(ImgURL + id + ".png")
+                    .fit()
+                    .centerCrop()
+                    .into(PokeImage);
+        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())

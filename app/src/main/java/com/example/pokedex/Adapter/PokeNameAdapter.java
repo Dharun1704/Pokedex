@@ -66,19 +66,27 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
 
         if(pic == 2){
             //load image
-            Picasso
-                    .get()
-                    .load(PokeImgURL + urlParts[urlParts.length - 1] + ".png" )
-                    .into(holder.image);
+            if(Integer.parseInt(urlParts[urlParts.length - 1]) > 10090)
+                holder.image.setImageResource(R.drawable.pokemon);
+            else {
+                Picasso
+                        .get()
+                        .load(PokeImgURL + urlParts[urlParts.length - 1] + ".png")
+                        .into(holder.image);
+            }
 
         }
 
         else if (pic == 1){
             //load item image
-            Picasso
-                    .get()
-                    .load(ItemImgUrl + currItem.getName() + ".png")
-                    .into(holder.image);
+            if(Integer.parseInt(urlParts[urlParts.length - 1]) > 10090)
+                holder.image.setImageResource(R.drawable.pokemon);
+            else {
+                Picasso
+                        .get()
+                        .load(ItemImgUrl + currItem.getName() + ".png")
+                        .into(holder.image);
+            }
         }
 
 
