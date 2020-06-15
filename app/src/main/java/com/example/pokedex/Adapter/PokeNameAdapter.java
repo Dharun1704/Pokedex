@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHolder>{
+public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHolder> implements Filterable{
 
     Context context;
     private ArrayList<Pokemon> PokeName;
@@ -62,23 +62,7 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
         //load name
         holder.name.setText(currItem.getName());
 
-        if(pic == 1) {
-            //load image
-            if (position <= 807) {
-                Picasso
-                        .get()
-                        .load(PokeImgURL + (position + 1) + ".png")
-                        .into(holder.image);
-            } else {
-                Picasso
-                        .get()
-                        .load(PokeImgURL + (position + 9193) + ".png")
-                        .into(holder.image);
-
-            }
-        }
-
-        else if (pic == 2){
+        if (pic == 1){
             //load item image
             Picasso
                     .get()
@@ -126,6 +110,41 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
         }
     }
 
+    @Override
+    public Filter getFilter() {
+        return pokeFilter;
+    }
 
+    private Filter pokeFilter = new Filter() {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Pokemon> filteredList = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0) {
+                filteredList.addAll(PokeAll);
+            }
+            else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Pokemon p : PokeAll){
+                    if (p.getName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(p);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return  results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            PokeName.clear();
+
+            PokeName.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 }

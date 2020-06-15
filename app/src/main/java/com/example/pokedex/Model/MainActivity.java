@@ -34,7 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_NAME = "PokeName";
     public static final String EXTRA_POS = "position";
-    int pic;
+    int pic, filter = 0;
 
     private ArrayList<Pokemon> PokeName;
     private ArrayList<Pokemon> PokeType;
@@ -45,16 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Pokemon> typeCurrPoke;
 
     private RecyclerView recyclerView;
-    private PokeNameAdapter nameAdapter;
-    private PokeNameAdapter typeAdapter;
-    private PokeNameAdapter locationAdapter;
-    private PokeNameAdapter itemAdapter;
-    private PokeNameAdapter regionAdapter;
-    private PokeNameAdapter typeNameAdapter;
-
+    private PokeNameAdapter rAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private PokeAPI pokeAPI;
     private ImageView pokeImage;
+    private Menu menu;
 
     private static final String TAG = "MainActivity";
 
@@ -90,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         btnName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter = 1;
                 getNameList();
             }
         });
@@ -97,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         btnItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter = 2;
                 getItemList();
             }
         });
@@ -104,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         btnType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter = 3;
                 getTypeList();
             }
         });
@@ -111,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         btnLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter = 4;
                 getLocationList();
             }
         });
@@ -118,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         btnRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                filter = 5;
                 getRegionList();
             }
         });
@@ -132,11 +132,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                pic = 1;
+                pic = 0;
                 PokeName = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
-                nameAdapter = new PokeNameAdapter(MainActivity.this, PokeName, pic);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, PokeName, pic);
                 recyclerView.setLayoutManager(mLayoutManager);
-                nameAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
+                rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
 
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(detailIntent);
                     }
                 });
-                recyclerView.setAdapter(nameAdapter);
+                recyclerView.setAdapter(rAdapter);
             }
 
             @Override
@@ -168,11 +169,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                pic = 2;
+                pic = 1;
                 PokeItem = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
-                itemAdapter = null;
-                itemAdapter = new PokeNameAdapter(MainActivity.this, PokeItem, 2);
-                recyclerView.setAdapter(itemAdapter);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, PokeItem, pic);
+                recyclerView.setAdapter(rAdapter);
+
             }
 
             @Override
@@ -193,11 +195,12 @@ public class MainActivity extends AppCompatActivity {
 
                 pic = 0;
                 PokeType = new ArrayList<>(Arrays.asList(response.body().results));
-                typeAdapter = null;
-                typeAdapter = new PokeNameAdapter(MainActivity.this, PokeType, pic);
-                recyclerView.setAdapter(typeAdapter);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, PokeType, pic);
+                recyclerView.setAdapter(rAdapter);
 
-                typeAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
+
+                rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
                         typePokemon(position+1);
@@ -221,16 +224,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                pic = 3;
+                pic = 0;
                 typeCurrPoke = new ArrayList<>();
                 TypeName = new ArrayList<>(Arrays.asList(response.body().pokemon));
                 for (TypePokeInnerList il : TypeName){
                     typeCurrPoke.add(il.pokemon);
                 }
 
-                typeNameAdapter = null;
-                typeNameAdapter = new PokeNameAdapter(MainActivity.this, typeCurrPoke, 0);
-                recyclerView.setAdapter(typeNameAdapter);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, typeCurrPoke, pic);
+                recyclerView.setAdapter(rAdapter);
             }
 
             @Override
@@ -252,9 +255,10 @@ public class MainActivity extends AppCompatActivity {
 
                 pic = 0;
                 PokeLocation = new ArrayList<>(Arrays.asList(response.body().results));
-                locationAdapter = null;
-                locationAdapter = new PokeNameAdapter(MainActivity.this, PokeLocation, pic);
-                recyclerView.setAdapter(locationAdapter);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, PokeLocation, pic);
+                recyclerView.setAdapter(rAdapter);
+
             }
 
             @Override
@@ -275,9 +279,9 @@ public class MainActivity extends AppCompatActivity {
 
                 pic = 0;
                 PokeRegion = new ArrayList<>(Arrays.asList(response.body().results));
-                regionAdapter = null;
-                regionAdapter = new PokeNameAdapter(MainActivity.this, PokeRegion, pic);
-                recyclerView.setAdapter(regionAdapter);
+                rAdapter = null;
+                rAdapter = new PokeNameAdapter(MainActivity.this, PokeRegion, pic);
+                recyclerView.setAdapter(rAdapter);
             }
 
             @Override
@@ -287,5 +291,28 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater =getMenuInflater();
+        inflater.inflate(R.menu.pokemon_menu, menu);
 
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                rAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
 }
