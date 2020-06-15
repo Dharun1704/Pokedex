@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import com.example.pokedex.Interface.PokeAPI;
 import com.example.pokedex.Adapter.PokeNameAdapter;
@@ -48,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private PokeNameAdapter rAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private PokeAPI pokeAPI;
-    private ImageView pokeImage;
-    private Menu menu;
 
     private static final String TAG = "MainActivity";
 
@@ -59,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pokeImage = findViewById(R.id.pokeImage);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(this, 2);
