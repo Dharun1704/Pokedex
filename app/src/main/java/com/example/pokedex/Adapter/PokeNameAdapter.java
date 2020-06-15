@@ -58,11 +58,22 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull PokeNameAdapter.ViewHolder holder, int position) {
         Pokemon currItem = PokeName.get(position);
+        String url = currItem.getUrl();
+        String[] urlParts = url.split("/");
 
         //load name
         holder.name.setText(currItem.getName());
 
-        if (pic == 1){
+        if(pic == 2){
+            //load image
+            Picasso
+                    .get()
+                    .load(PokeImgURL + urlParts[urlParts.length - 1] + ".png" )
+                    .into(holder.image);
+
+        }
+
+        else if (pic == 1){
             //load item image
             Picasso
                     .get()

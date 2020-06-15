@@ -53,6 +53,8 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String PokemonName = intent.getStringExtra(EXTRA_NAME);
         id = intent.getIntExtra(EXTRA_POS, -1) + 1;
+        if (id > 807)
+            id += 9193;
 
         PokeName = findViewById(R.id.detail_name);
         PokeImage = findViewById(R.id.detail_image);

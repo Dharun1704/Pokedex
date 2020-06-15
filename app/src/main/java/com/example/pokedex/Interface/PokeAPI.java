@@ -9,7 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface PokeAPI {
-    @GET("pokemon?offset=0&limit=964")
+    @GET("pokemon/?offset=0&limit=964")
     Call<PokeList> getPokeNameJson();
 
     @GET("pokemon/{id}/")

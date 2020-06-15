@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                pic = 0;
+                pic = 2;
                 PokeName = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeName, pic);
@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
                         Pokemon clickedPokemon = PokeName.get(position);
+
 
                         detailIntent.putExtra(EXTRA_NAME, clickedPokemon.getName());
                         detailIntent.putExtra(EXTRA_POS, position);
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                pic = 0;
+                pic = 2;
                 typeCurrPoke = new ArrayList<>();
                 TypeName = new ArrayList<>(Arrays.asList(response.body().pokemon));
                 for (TypePokeInnerList il : TypeName){
