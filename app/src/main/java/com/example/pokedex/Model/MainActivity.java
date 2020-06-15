@@ -33,7 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_NAME = "PokeName";
     public static final String EXTRA_POS = "position";
-    int pic, filter = 0;
+    int pic;
 
     private ArrayList<Pokemon> PokeName;
     private ArrayList<Pokemon> PokeType;
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         btnName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter = 1;
                 getNameList();
             }
         });
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         btnItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter = 2;
                 getItemList();
             }
         });
@@ -97,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         btnType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter = 3;
                 getTypeList();
             }
         });
@@ -105,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         btnLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter = 4;
                 getLocationList();
             }
         });
@@ -113,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         btnRegion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filter = 5;
                 getRegionList();
             }
         });
