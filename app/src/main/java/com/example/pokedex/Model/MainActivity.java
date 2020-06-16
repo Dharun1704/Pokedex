@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Pokemon> locAreaPoke;
     private ArrayList<PokemonEncounters> regionPoke;
     private ArrayList<Pokemon> pokemonEncounter;
+    private ArrayList<Pokemon> pokemonEncounterUnique;
 
     private RecyclerView recyclerView;
     private PokeNameAdapter rAdapter;

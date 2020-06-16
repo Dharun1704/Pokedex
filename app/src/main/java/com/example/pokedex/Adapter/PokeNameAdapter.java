@@ -27,7 +27,6 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
     private ArrayList<Pokemon> PokeAll;
     private OnItemClickListener mListener;
     private int pic;
-    private ArrayList<String> name;
 
     String PokeImgURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
     String ItemImgUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/";
@@ -37,7 +36,6 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
         this.context = context;
         PokeName = pokeName;
         PokeAll = new ArrayList<>(pokeName);
-        name = new ArrayList<>();
         this.pic = pic;
     }
 
@@ -64,10 +62,8 @@ public class PokeNameAdapter extends RecyclerView.Adapter<PokeNameAdapter.ViewHo
         String[] urlParts = url.split("/");
 
         //load name
-        if(!name.contains(currItem.getName())) {
-            name.add(currItem.getName());
-            holder.name.setText(currItem.getName());
-        }
+        holder.name.setText(currItem.getName());
+
 
         if(pic == 2){
             //load image
