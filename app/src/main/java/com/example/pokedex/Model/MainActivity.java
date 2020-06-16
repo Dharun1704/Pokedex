@@ -42,11 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Pokemon> PokeRegion;
     private ArrayList<TypePokeInnerList> TypeName;
     private ArrayList<Pokemon> typeCurrPoke;
-    private ArrayList<Pokemon> regCurrPoke;
-    private ArrayList<Pokemon> locAreaPoke;
-    private ArrayList<PokemonEncounters> regionPoke;
-    private ArrayList<Pokemon> pokemonEncounter;
-    private ArrayList<Pokemon> pokemonEncounterUnique;
 
     private RecyclerView recyclerView;
     private PokeNameAdapter rAdapter;
@@ -277,103 +272,11 @@ public class MainActivity extends AppCompatActivity {
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeRegion, pic);
                 recyclerView.setAdapter(rAdapter);
-                rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        regionLocation(position+1);
-                    }
-                });
             }
 
             @Override
             public void onFailure(Call<PokeList> call, Throwable t) {
                 Log.i("Error:", "Fetch: "+ t.getMessage());
-            }
-        });
-    }
-
-    public void regionLocation(int i){
-        pokemonEncounter = new ArrayList<>();
-        rAdapter = null;
-        Call<RegionLoc> call7 = pokeAPI.getRegionLocationJson(i);
-        call7.enqueue(new Callback<RegionLoc>() {
-            @Override
-            public void onResponse(Call<RegionLoc> call, Response<RegionLoc> response) {
-                if (!response.isSuccessful()){
-                    return;
-                }
-
-                pic = 0;
-                regCurrPoke = new ArrayList<>(Arrays.asList(response.body().locations));
-
-                for (int j = 0; j < regCurrPoke.size(); j++) {
-                    Pokemon currLoc = regCurrPoke.get(j);
-                    String locUrl = currLoc.getUrl();
-                    String[] urlParts = locUrl.split("/");
-                    int a = Integer.parseInt(urlParts[urlParts.length - 1]);
-
-                    getLocationAreas(a);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RegionLoc> call, Throwable t) {
-                Log.i("Error:", "Fetch: "+ t.getMessage());
-            }
-        });
-    }
-
-    public void getLocationAreas(int a){
-        Call<LocationAreas> call8 = pokeAPI.getLocationAreasJson(a);
-        call8.enqueue(new Callback<LocationAreas>() {
-            @Override
-            public void onResponse(Call<LocationAreas> call, Response<LocationAreas> response) {
-                if (!response.isSuccessful()){
-                    return;
-                }
-
-                pic = 0;
-                locAreaPoke = new ArrayList<>(Arrays.asList(response.body().areas));
-
-                for (int k = 0; k < locAreaPoke.size(); k++) {
-                    Pokemon locArea = locAreaPoke.get(k);
-                    String areaUrl = locArea.getUrl();
-                    String[] areaUrlParts = areaUrl.split("/");
-                    int b = Integer.parseInt(areaUrlParts[areaUrlParts.length - 1]);
-
-                    getAreaEncounters(b);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LocationAreas> call, Throwable t) {
-                Log.i("Error:", "Fetch: "+ t.getMessage());
-            }
-        });
-    }
-
-    private void getAreaEncounters(int b){
-        Call<AreaEncounters> call9 = pokeAPI.getPokemonEncounterJson(b);
-        call9.enqueue(new Callback<AreaEncounters>() {
-            @Override
-            public void onResponse(Call<AreaEncounters> call, Response<AreaEncounters> response) {
-                if (!response.isSuccessful()){
-                    return;
-                }
-
-                pic = 2;
-                regionPoke = new ArrayList<>(Arrays.asList(response.body().pokemon_encounters));
-                for (PokemonEncounters pe : regionPoke){
-                    pokemonEncounter.add(pe.pokemon);
-                }
-
-                rAdapter = new PokeNameAdapter(MainActivity.this, pokemonEncounter, pic);
-                recyclerView.setAdapter(rAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<AreaEncounters> call, Throwable t) {
-
             }
         });
     }
