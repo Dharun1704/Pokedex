@@ -67,7 +67,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_horizontal"
-                            android:text="Height"
+                            android:text="ID"
                             android:textColor="#FFF"
                             android:textSize="16sp" />
 
@@ -84,7 +84,7 @@
 
                         <TextView
                             android:id="@+id/exp_card"
-                            android:text="Weight"
+                            android:text="Experience"
                             android:textSize="16sp"
                             android:textColor="#FFF"
                             android:layout_width="match_parent"

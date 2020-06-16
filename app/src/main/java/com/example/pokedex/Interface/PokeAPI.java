@@ -1,7 +1,10 @@
 package com.example.pokedex.Interface;
 
+import com.example.pokedex.Model.AreaEncounters;
+import com.example.pokedex.Model.LocationAreas;
 import com.example.pokedex.Model.PokeList;
 import com.example.pokedex.Model.PokemonClass;
+import com.example.pokedex.Model.RegionLoc;
 import com.example.pokedex.Model.TypePokeList;
 
 import retrofit2.Call;
@@ -29,4 +32,13 @@ public interface PokeAPI {
 
     @GET("region")
     Call<PokeList> getRegionNameJson();
+
+    @GET("region/{id}/")
+    Call<RegionLoc> getRegionLocationJson(@Path("id") int id);
+
+    @GET("location/{id}/")
+    Call<LocationAreas> getLocationAreasJson(@Path("id") int id);
+
+    @GET("location-area/{id}")
+    Call<AreaEncounters> getPokemonEncounterJson(@Path("id") int id);
 }
