@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/PokeDex"
+        android:title="Poke Dex" />
+    <item android:id="@+id/ItemDex"
+        android:title="Item Dex"/>
+    <item android:id="@+id/TypeDex"
+        android:title="Type Dex"/>
+    <item android:id="@+id/LocationDex"
+        android:title="Location Dex"/>
+    <item android:id="@+id/RegionDex"
+        android:title="Region Dex"/>
+
+</menu>
