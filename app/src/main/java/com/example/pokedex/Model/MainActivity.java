@@ -1,8 +1,13 @@
 package com.example.pokedex.Model;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,9 +24,11 @@ import android.widget.Button;
 import com.example.pokedex.Interface.PokeAPI;
 import com.example.pokedex.Adapter.PokeNameAdapter;
 import com.example.pokedex.R;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     public static final String EXTRA_NAME = "PokeName";
     public static final String EXTRA_POS = "position";
     int pic;
@@ -47,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private PokeNameAdapter rAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private PokeAPI pokeAPI;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
     private static final String TAG = "MainActivity";
 
@@ -55,6 +66,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolbar = findViewById(R.id.nav_action);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
+        for (int i = 0; i < 5; i++) {
+            navigationView.getMenu().getItem(i).setActionView(R.layout.menu_image);
+        }
+
+        drawerLayout = findViewById(R.id.draw_layout);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.Open, R.string.Close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -67,51 +94,43 @@ public class MainActivity extends AppCompatActivity {
 
         pokeAPI = retrofit.create(PokeAPI.class);
         getNameList();
-        setBtnListener();
     }
 
-    public void setBtnListener(){
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(toggle.onOptionsItemSelected(item)){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        Button btnName = findViewById(R.id.btn_name);
-        Button btnType = findViewById(R.id.btn_type);
-        Button btnLocation = findViewById(R.id.btn_location);
-        Button btnItem = findViewById(R.id.btn_item);
-        Button btnRegion = findViewById(R.id.btn_region);
-
-        btnName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.PokeDex:
                 getNameList();
-            }
-        });
-
-        btnItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                getSupportActionBar().setTitle("Poke Dex");
+                break;
+            case R.id.ItemDex:
                 getItemList();
-            }
-        });
-
-        btnType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                getSupportActionBar().setTitle("Item Dex");
+                break;
+            case R.id.TypeDex:
                 getTypeList();
-            }
-        });
-
-        btnLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                getSupportActionBar().setTitle("Type Dex");
+                break;
+            case R.id.LocationDex:
                 getLocationList();
-            }
-        });
-
-        btnRegion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getRegionList();
-            }
-        });
+                getSupportActionBar().setTitle("Location Dex");
+                break;
+            case R.id.RegionDex:
+                getTypeList();
+                getSupportActionBar().setTitle("Region Dex");
+                break;
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     public void getNameList(){
