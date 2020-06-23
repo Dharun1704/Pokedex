@@ -2,14 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/PokeDex"
-        android:title="Poke Dex" />
+        android:title="Poke Dex"
+        android:icon="@drawable/pokeball" />
+
     <item android:id="@+id/ItemDex"
-        android:title="Item Dex"/>
+        android:title="Item Dex"
+        android:icon="@drawable/ic_item"/>
+
     <item android:id="@+id/TypeDex"
-        android:title="Type Dex"/>
+        android:title="Type Dex"
+        android:icon="@drawable/type"/>
+
     <item android:id="@+id/LocationDex"
-        android:title="Location Dex"/>
+        android:title="Location Dex"
+        android:icon="@drawable/location"/>
+
     <item android:id="@+id/RegionDex"
-        android:title="Region Dex"/>
+        android:title="Region Dex"
+        android:icon="@drawable/ic_region"/>
 
 </menu>
