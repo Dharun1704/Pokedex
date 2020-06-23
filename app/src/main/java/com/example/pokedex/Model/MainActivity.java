@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportActionBar().setTitle("Location Dex");
                 break;
             case R.id.RegionDex:
-                getTypeList();
+                getRegionList();
                 getSupportActionBar().setTitle("Region Dex");
                 break;
         }
