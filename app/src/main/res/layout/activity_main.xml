@@ -39,6 +39,7 @@
             android:layout_gravity="start"
             app:menu="@menu/side_drawer"
             app:itemIconTint="#FFF"
+            android:theme="@style/SideDrawer"
             android:background="@color/colorPrimary"
             app:itemTextColor="#FFF">
 
