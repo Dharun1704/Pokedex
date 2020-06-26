@@ -9,11 +9,11 @@
 
     <item android:id="@+id/ItemDex"
         android:title="Item Dex"
-        android:icon="@drawable/ic_item"/>
+        android:icon="@drawable/type"/>
 
     <item android:id="@+id/TypeDex"
         android:title="Type Dex"
-        android:icon="@drawable/type"/>
+        android:icon="@drawable/ic_item"/>
 
     <item android:id="@+id/LocationDex"
         android:title="Location Dex"
