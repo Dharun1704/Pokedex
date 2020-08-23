@@ -23,4 +23,8 @@
         android:title="Region Dex"
         android:icon="@drawable/ic_region"/>
 
+    <item android:id="@+id/Favorite"
+        android:title="Favorites"
+        android:icon="@drawable/ic_baseline_favorite_24"/>
+
 </menu>

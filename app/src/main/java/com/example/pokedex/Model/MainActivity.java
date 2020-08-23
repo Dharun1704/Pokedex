@@ -9,9 +9,11 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.pokedex.Interface.PokeAPI;
 import com.example.pokedex.Adapter.PokeNameAdapter;
@@ -47,8 +50,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Pokemon> PokeLocation;
     private ArrayList<Pokemon> PokeItem;
     private ArrayList<Pokemon> PokeRegion;
+    private ArrayList<Pokemon> favorites;
     private ArrayList<TypePokeInnerList> TypeName;
     private ArrayList<Pokemon> typeCurrPoke;
+    private Database mDatabase;
 
     private RecyclerView recyclerView;
     private PokeNameAdapter rAdapter;
@@ -73,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             navigationView.getMenu().getItem(i).setActionView(R.layout.menu_image);
         }
 
@@ -85,7 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(this, 2);
+
+        mDatabase = new Database(this);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://pokeapi.co/api/v2/")
@@ -94,6 +100,126 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         pokeAPI = retrofit.create(PokeAPI.class);
         getNameList();
+
+    }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            int position = viewHolder.getAdapterPosition();
+
+            if (getSupportActionBar().getTitle().toString().equals("Poke Dex")) {
+
+                if (direction == ItemTouchHelper.LEFT) {
+
+                    Pokemon favPoke = PokeName.get(position);
+                    Cursor data = mDatabase.getData();
+                    ArrayList<Pokemon> favorites = new ArrayList<>();
+
+                    while (data.moveToNext()) {
+                        String name = data.getString(1);
+                        String url = data.getString(2);
+                        Pokemon pTemp = new Pokemon();
+                        pTemp.setName(name);
+                        pTemp.setUrl(url);
+                        favorites.add(pTemp);
+                    }
+
+                    boolean isExists = false;
+                    for (int i = 0; i < favorites.size(); i++) {
+                        if (favorites.get(i).getName().equals(favPoke.getName())) {
+                            isExists = true;
+                        }
+                    }
+                    if (favPoke != null) {
+                        if (!isExists)
+                            addFavorite(favPoke);
+                        else
+                            Toast.makeText(MainActivity.this, favPoke.getName() + " already exists in favorites", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Unable to find pokemon", Toast.LENGTH_SHORT).show();
+                    }
+                    getNameList();
+                }
+
+                if (direction == ItemTouchHelper.RIGHT) {
+                    Toast.makeText(MainActivity.this, "You are not in favorite page to delete a pokemon", Toast.LENGTH_SHORT).show();
+                    getNameList();
+                }
+            }
+
+            else if (getSupportActionBar().getTitle().toString().equals("Favorites")) {
+                if (direction == ItemTouchHelper.LEFT){
+                    Toast.makeText(MainActivity.this, "You are in favorites page", Toast.LENGTH_SHORT).show();
+                    getFavoriteList();
+                    String title = getSupportActionBar().getTitle().toString();
+                    switch (title) {
+                        case "Item Dex":
+                            getItemList();
+                            break;
+                        case "Type Dex":
+                            getTypeList();
+                            break;
+                        case "Location Dex":
+                            getLocationList();
+                            break;
+                        case "Region Dex":
+                            getRegionList();
+                            break;
+                    }
+                }
+
+                if (direction ==  ItemTouchHelper.RIGHT) {
+                    Pokemon favPoke = favorites.get(position);
+                    String name = favPoke.getName();
+                    int deleteRow = mDatabase.deleteData(name);
+                    if (deleteRow > 0) {
+                        Toast.makeText(MainActivity.this, favPoke.getName() + " deleted from favorites", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        Toast.makeText(MainActivity.this, "Not able to delete " + favPoke.getName() , Toast.LENGTH_SHORT).show();
+                    getFavoriteList();
+                }
+            }
+
+            else {
+                Toast.makeText(MainActivity.this, "Only pokemon can be added or deleted", Toast.LENGTH_SHORT).show();
+                String title = getSupportActionBar().getTitle().toString();
+                switch (title) {
+                    case "Item Dex":
+                        getItemList();
+                        break;
+                    case "Type Dex":
+                        getTypeList();
+                        break;
+                    case "Location Dex":
+                        getLocationList();
+                        break;
+                    case "Region Dex":
+                        getRegionList();
+                        break;
+                }
+            }
+        }
+    };
+
+    public void addFavorite(Pokemon p) {
+        String name = p.getName();
+        String url = p.getUrl();
+        boolean insertData = mDatabase.addData(name, url);
+
+        if (insertData) {
+            Toast.makeText(MainActivity.this, p.getName() + " added to favorites", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(MainActivity.this, "Unable to add " + p.getName() + " to favorites", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -128,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getRegionList();
                 getSupportActionBar().setTitle("Region Dex");
                 break;
+            case R.id.Favorite:
+                getFavoriteList();
+                getSupportActionBar().setTitle("Favorites");
+                break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -143,9 +273,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 pic = 2;
-                PokeName = new ArrayList<Pokemon>(Arrays.asList(response.body().results));
+                PokeName = new ArrayList<>(Arrays.asList(response.body().results));
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeName, pic);
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
                 recyclerView.setLayoutManager(mLayoutManager);
                 rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
                     @Override
@@ -160,6 +291,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
                 recyclerView.setAdapter(rAdapter);
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                itemTouchHelper.attachToRecyclerView(recyclerView);
             }
 
             @Override
@@ -183,7 +316,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeItem, pic);
                 recyclerView.setAdapter(rAdapter);
-
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
             }
 
             @Override
@@ -207,7 +341,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeType, pic);
                 recyclerView.setAdapter(rAdapter);
-
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
 
                 rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
                     @Override
@@ -243,6 +378,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, typeCurrPoke, pic);
                 recyclerView.setAdapter(rAdapter);
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
             }
 
             @Override
@@ -251,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
 
     public void getLocationList(){
         Call<PokeList> call4 = pokeAPI.getLocationNameJson();
@@ -267,7 +403,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeLocation, pic);
                 recyclerView.setAdapter(rAdapter);
-
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
             }
 
             @Override
@@ -291,6 +428,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 rAdapter = null;
                 rAdapter = new PokeNameAdapter(MainActivity.this, PokeRegion, pic);
                 recyclerView.setAdapter(rAdapter);
+                mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+                recyclerView.setLayoutManager(mLayoutManager);
             }
 
             @Override
@@ -298,6 +437,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("Error:", "Fetch: "+ t.getMessage());
             }
         });
+    }
+
+    public void getFavoriteList() {
+        Cursor data = mDatabase.getData();
+        favorites = new ArrayList<>();
+        while (data.moveToNext()) {
+            String name = data.getString(1);
+            String url = data.getString(2);
+            Pokemon p = new Pokemon();
+            p.setName(name);
+            p.setUrl(url);
+            favorites.add(p);
+        }
+        rAdapter = null;
+        rAdapter = new PokeNameAdapter(MainActivity.this,favorites, 2);
+        mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
+        recyclerView.setLayoutManager(mLayoutManager);
+        rAdapter.setOnItemClickListener(new PokeNameAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                Pokemon clickedPokemon = PokeName.get(position);
+                detailIntent.putExtra(EXTRA_NAME, clickedPokemon.getName());
+                detailIntent.putExtra(EXTRA_POS, clickedPokemon.getUrl());
+
+                startActivity(detailIntent);
+            }
+        });
+        recyclerView.setAdapter(rAdapter);
     }
 
     @Override
