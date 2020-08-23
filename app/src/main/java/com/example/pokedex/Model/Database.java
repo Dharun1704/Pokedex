@@ -8,11 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.pokedex.R;
-import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-
 public class Database extends SQLiteOpenHelper {
 
     String PokeImgURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
