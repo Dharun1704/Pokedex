@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     Pokemon favPoke = PokeName.get(position);
                     Cursor data = mDatabase.getData();
-                    ArrayList<Pokemon> favorites = new ArrayList<>();
+                    favorites = new ArrayList<>();
 
                     while (data.moveToNext()) {
                         String name = data.getString(1);
